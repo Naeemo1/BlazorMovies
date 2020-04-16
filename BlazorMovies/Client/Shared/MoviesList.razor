@@ -1,0 +1,52 @@
+﻿@inject IJSRuntime js
+
+<input type="checkbox" @bind="displayButtons" />
+<GenericList List="Movies">
+    <Elements Context="movie">
+        <IndividualMovie Movie="movie" displayButton="displayButtons" DeleteMovie="DeleteMovie" />
+    </Elements>
+</GenericList>
+
+<Confirmation @ref="confirmation" onCancel="onCancel" onConfirm="onConfirm">
+    <div>Do you wish delete this @movieToBeDeleted.Title?</div>
+    </Confirmation>
+
+@code {
+    Confirmation confirmation;
+    [Parameter] public List<Movie> Movies { get; set; }
+
+
+    bool displayButtons = false;
+    Movie movieToBeDeleted;
+
+    private async Task DeleteMovie(Movie movie)
+    {
+        movieToBeDeleted = movie;
+        confirmation.Show();
+        //var confirmed = await js.InvokeAsync<bool>("confirm", $"Are u sure to delete {movie.Title}?");
+        //await js.MyFunction("Hi");
+        //var confirmed = await js.Confirm($"Are u sure to delete {movie.Title}?");
+        //if (confirmed)
+        //{
+
+        //    Movies.Remove(movie);
+        //}
+
+    }
+
+    void onConfirm()
+    {
+        Movies.Remove(movieToBeDeleted);
+        confirmation.Hide();
+        movieToBeDeleted = null;
+    }
+
+    void onCancel()
+    {
+        confirmation.Hide();
+        movieToBeDeleted = null;
+    }
+
+
+
+}

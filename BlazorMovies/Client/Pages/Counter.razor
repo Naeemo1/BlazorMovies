@@ -1,0 +1,31 @@
+﻿@*@page "/counter"*@
+@*@inject SingletonService singleton
+@inject TransientService transient*@
+
+<h1 style="color:@appStyle.Color;font-size:@appStyle.Size;">Counter</h1>
+
+<div style="display:flex">
+    <div style="width:150px">
+        <select @bind="appStyle.Color" class="form-control" style="margin-top:15px;">
+            <option value="green">Green</option>
+            <option value="red">Red</option>
+            <option value="blue">Blue</option>
+        </select>
+    </div>
+    <div style="width:150px">
+        <select @bind="appStyle.Size" class="form-control" style="margin-top:15px;">
+            <option value="12px">12px</option>
+            <option value="20px">20px</option>
+            <option value="30px">30px</option>
+        </select>
+    </div>
+</div>
+
+<p>Current count: @currentCount</p>
+<p>singleton count: @singleton.Value</p>
+<p>transient count: @transient.Value</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me Static</button>
+<button class="btn btn-primary" @onclick="IncrementCountInstance">Click me Intance</button>
+<button class="btn btn-primary" @onclick="IncrementCountJavascript">Click me JS</button>
+

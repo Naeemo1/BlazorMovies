@@ -1,0 +1,40 @@
+﻿@page "/"
+@inject IRepositry repositry
+
+<div>
+    <h3>Movies</h3>
+    <MoviesListCom Movies="movies" />
+    @*<NullTemplate>
+            <span style="color:red">This is looading..</span>
+        </NullTemplate>
+        <EmptyTemplate>
+            <span style="color: black">No record to see..</span>
+        </EmptyTemplate>*@
+
+</div>
+
+<CustomeTypeahead SearchMethod="SearchMethod">
+    <ResultTemplate>@context</ResultTemplate>
+</CustomeTypeahead>
+
+@code{
+
+    private List<Movie> movies;
+
+    protected async override Task OnInitializedAsync()
+    {
+        await Task.Delay(3000);
+
+        movies = repositry.GetMovie();
+    }
+
+    private async Task<IEnumerable<string>> SearchMethod(string searchText)
+    {
+        await Task.Delay(2000);
+        if(searchText == "test") { return Enumerable.Empty<string>(); }
+        return new List<string>() { "Flip", "Gav" };
+    }
+
+}
+
+<SurveyPrompt Title="How is Blazor working for you?" />
