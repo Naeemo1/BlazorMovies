@@ -28,20 +28,27 @@ else if (List.Count == 0)
 else
 {
     @*<input type="checkbox" @onchange="@(() => displayButtons = !displayButtons)" />*@
-   
 
-    @foreach (var element in List)
+    @if (Elements != null)
     {
-        @Elements(element)
+        @foreach (var element in List)
+        {
+            @Elements(element)
+        }
+    }
+    else
+    {
+        @WholeListTempalte
     }
 
 }
 
 @code {
-       
+
     [Parameter] public RenderFragment NullTemplate { get; set; }
     [Parameter] public RenderFragment EmptyTemplate { get; set; }
     [Parameter] public RenderFragment<TItem> Elements { get; set; }
+    [Parameter] public RenderFragment WholeListTempalte { get; set; }
     [Parameter] public List<TItem> List { get; set; }
 
 }

@@ -1,9 +1,10 @@
 ﻿@page "/"
 @inject IRepositry repositry
+@inject IMoviesRepository moviesRepository
 
 <div>
-    <h3>Movies</h3>
-    <MoviesListCom Movies="movies" />
+    <h3>In Theaters</h3>
+    <MoviesListCom Movies="InTheaters" />
     @*<NullTemplate>
             <span style="color:red">This is looading..</span>
         </NullTemplate>
@@ -13,28 +14,34 @@
 
 </div>
 
-<CustomeTypeahead SearchMethod="SearchMethod">
+<div>
+    <h3>Upcoming Releases</h3>
+    <MoviesListCom Movies="UpcomingReleases" />
+</div>
+
+@*<CustomeTypeahead SearchMethod="SearchMethod">
     <ResultTemplate>@context</ResultTemplate>
-</CustomeTypeahead>
+</CustomeTypeahead>*@
 
 @code{
 
-    private List<Movie> movies;
+    private List<Movie> InTheaters;
+    private List<Movie> UpcomingReleases;
 
     protected async override Task OnInitializedAsync()
     {
-        await Task.Delay(3000);
+        var response = await moviesRepository.GetIndexPageDTO();
+        InTheaters = response.InTheaters;
+        UpcomingReleases = response.UpcomingReleases;
 
-        movies = repositry.GetMovie();
     }
 
-    private async Task<IEnumerable<string>> SearchMethod(string searchText)
-    {
-        await Task.Delay(2000);
-        if(searchText == "test") { return Enumerable.Empty<string>(); }
-        return new List<string>() { "Flip", "Gav" };
-    }
+    //private async Task<IEnumerable<string>> SearchMethod(string searchText)
+    //{
+    //    await Task.Delay(2000);
+    //    if(searchText == "test") { return Enumerable.Empty<string>(); }
+    //    return new List<string>() { "Flip", "Gav" };
+    //}
 
 }
 
-<SurveyPrompt Title="How is Blazor working for you?" />

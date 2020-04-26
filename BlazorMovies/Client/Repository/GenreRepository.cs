@@ -17,6 +17,28 @@ namespace BlazorMovies.Client.Repository
             this.httpService = httpService;
         }
 
+        public async Task<List<Genre>> GetGenres()
+        {
+            var response = await httpService.Get<List<Genre>>(url);
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+
+            return response.Response;
+        }
+
+        public async Task<Genre> GetGenres(int id)
+        {
+            var response = await httpService.Get<Genre>($"{url}/{id}");
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+
+            return response.Response;
+        }
+
         public async Task CreateGenre(Genre genre)
         {
             var response = await httpService.Post(url, genre);
@@ -25,5 +47,15 @@ namespace BlazorMovies.Client.Repository
                 throw new ApplicationException(await response.GetBody());
             }
         }
+
+        public async Task UpdateGenre(Genre genre)
+        {
+            var response = await httpService.Put(url, genre);
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+
     }
 }

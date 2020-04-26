@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using AutoMapper;
 
 namespace BlazorMovies.Server
 {
@@ -27,12 +28,16 @@ namespace BlazorMovies.Server
         {
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddAutoMapper(typeof(Startup));
+
             //services.AddScoped<IFileStorageService, AzuraStorageService>();
             services.AddScoped<IFileStorageService, InAppStorageService>();
             services.AddHttpContextAccessor();
             services.AddMvc()
                           .AddNewtonsoftJson(options =>
-                          options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore); services.AddResponseCompression(opts =>
+                          options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            
+            services.AddResponseCompression(opts =>
             {
                 opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
                     new[] { "application/octet-stream" });
