@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorMovies.Shared.DTOS;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,5 +18,40 @@ namespace BlazorMovies.Client.Helpers
 
             return response.Response;
         }
+
+        public static async Task DeleteHelper(this IHttpService httpService, string url)
+        {
+            var response = await httpService.Delete(url);
+            if (!response.Success)
+            {
+                throw new ApplicationException(await response.GetBody());
+            }
+        }
+
+        public static async Task<PaginatedResponse<T>> GetHelper<T>(this IHttpService httpService, string url, PaginationDTO paginationDTO)
+        {
+            string newURL = "";
+            if (url.Contains("?"))
+            {
+                newURL = $"{url}&page={paginationDTO.Page}&recordsPerPage={paginationDTO.RecordsPerPage}"; 
+            }
+            else
+            {
+                newURL = $"{url}?page={paginationDTO.Page}&recordsPerPage={paginationDTO.RecordsPerPage}";
+            }
+
+            var HttpResponse = await httpService.Get<T>(newURL);
+            var totalAmountPages = int.Parse(HttpResponse.HttpResponseMessage.Headers.GetValues("totalAmountPages").FirstOrDefault());
+
+            var paginatedResponse = new PaginatedResponse<T>
+            {
+                Response = HttpResponse.Response,
+                TotalAmountPages = totalAmountPages
+            };
+
+            return paginatedResponse;
+
+        }
+
     }
 }

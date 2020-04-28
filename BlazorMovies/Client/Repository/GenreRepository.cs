@@ -57,5 +57,9 @@ namespace BlazorMovies.Client.Repository
             }
         }
 
+        public async Task DeleteGenre(int id)
+        {
+            await httpService.DeleteHelper($"{url}/{id}");
+        }
     }
 }

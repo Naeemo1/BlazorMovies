@@ -7,6 +7,8 @@
     <a class="btn btn-info" href="person/create">New People</a>
 </div>
 
+<Pagination CurrentPage="@paginationDTO.Page" TotalAmountPages="totalAmountPages" SelectedPage="SelectesPage" />
+
 <GenericList List="People">
     <WholeListTempalte>
         <table class="table table-striped">
@@ -22,7 +24,7 @@
                     <tr>
                         <td>
                             <a class="btn btn-success" href="/person/edit/@item.Id">Edit</a>
-                            <a class="btn btn-danger">Delete</a>
+                            <a class="btn btn-danger" @onclick="@(() => DeletePerson(item.Id))">Delete</a>
                         </td>
                         <td>@item.Name</td>
                     </tr>
@@ -35,18 +37,41 @@
 @code {
 
     List<Person> People;
+    PaginationDTO paginationDTO = new PaginationDTO();
+    private int totalAmountPages;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            People = await personRepository.GetPeople();
+            await LoadPeople();
         }
         catch (Exception e)
         {
 
             throw;
         }
+    }
+
+    private async Task LoadPeople()
+    {
+        var paginatedResponse = await personRepository.GetPeople(paginationDTO);
+        People = paginatedResponse.Response;
+        totalAmountPages = paginatedResponse.TotalAmountPages;
+    }
+
+    private async Task SelectesPage(int page)
+    {
+        paginationDTO.Page = page;
+        await LoadPeople();
+    }
+
+
+    private async Task DeletePerson(int id)
+    {
+        await personRepository.DeletePerson(id);
+        await LoadPeople();
+
     }
 
 }

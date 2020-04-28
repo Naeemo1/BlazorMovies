@@ -1,9 +1,10 @@
 ﻿@inject IJSRuntime js
+@inject IMoviesRepository movieRepository
 
 <div class="movies-container">
     <GenericList List="Movies">
         <Elements Context="movie">
-            <IndividualMovie Movie="movie" DeleteMovie="DeleteMovie" />
+            <IndividualMovie Movie="movie" DeleteMovie="DeleteMovie" @key="movie.Id" />
         </Elements>
     </GenericList>
 </div>
@@ -19,12 +20,12 @@
 
     private async Task DeleteMovie(Movie movie)
     {
-        await js.MyFunction("Hi");
+        //await js.MyFunction("Hi");
         //var confirmed = await js.InvokeAsync<bool>("confirm", $"Are u sure to delete {movie.Title}?");
         var confirmed = await js.Confirm($"Are u sure to delete {movie.Title}?");
         if (confirmed)
         {
-
+            await movieRepository.DeleteMovie(movie.Id);
             Movies.Remove(movie);
         }
 
